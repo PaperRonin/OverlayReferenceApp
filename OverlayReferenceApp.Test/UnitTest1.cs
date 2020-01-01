@@ -15,10 +15,5 @@ namespace Tests
             Assert.Pass();
         }
 
-        [Test]
-        public void TestFail()
-        {
-            Assert.Fail();
-        }
     }
 }
