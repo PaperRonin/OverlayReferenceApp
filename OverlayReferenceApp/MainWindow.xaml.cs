@@ -24,5 +24,20 @@ namespace OverlayReferenceApp
         {
             InitializeComponent();
         }
+
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonHide_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
