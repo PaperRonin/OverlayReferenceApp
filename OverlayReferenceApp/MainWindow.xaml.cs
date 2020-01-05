@@ -39,5 +39,10 @@ namespace OverlayReferenceApp
         {
 
         }
+
+        private void ButtonLoad_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
