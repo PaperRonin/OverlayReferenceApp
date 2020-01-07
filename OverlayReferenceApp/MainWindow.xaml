@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OverlayReferenceApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Menu" Height="300" Width="250">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="FontSize" Value="30" />
+            </Style>
+        </Grid.Resources>
         
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <Button Grid.Row="0" Content="Add reference" Click="ButtonAdd_Click"/>
+        <Button Grid.Row="1" Content="Hide all" Click="ButtonHide_Click"/>
+        <Button Grid.Row="2" Content="Save preset" Click="ButtonSave_Click"/>
+        <Button Grid.Row="3" Content="Load preset" Click="ButtonLoad_Click"/>
+
     </Grid>
 </Window>
