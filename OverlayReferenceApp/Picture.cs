@@ -65,10 +65,29 @@ namespace OverlayReferenceApp
 
         public static class Movement
         {
-
-            public static int MoveTo()
+            public static int MoveTo(Point startingPoint, Point currentPoint, Image img, Point windowCenter)
             {
 
+                Point upperLeftCornerDelta = new Point(currentPoint.X + img.Margin.Left - startingPoint.X,
+                    currentPoint.Y + img.Margin.Top - startingPoint.Y);
+
+                Point lowerRightCornerDelta = new Point(currentPoint.X + img.Margin.Left + img.Width - startingPoint.X,
+                    currentPoint.Y + img.Margin.Top + img.Height - startingPoint.Y);
+
+                Console.WriteLine(img.Margin.Top);
+                Console.WriteLine(windowCenter.Y);
+                Console.WriteLine();
+
+                if (upperLeftCornerDelta.X > windowCenter.X || lowerRightCornerDelta.X < windowCenter.X)
+                {
+                    upperLeftCornerDelta.X = img.Margin.Left;
+                }
+                if (upperLeftCornerDelta.Y > windowCenter.Y || lowerRightCornerDelta.Y < windowCenter.Y)
+                {
+                    upperLeftCornerDelta.Y = img.Margin.Top;
+                }
+
+                img.Margin = new Thickness(upperLeftCornerDelta.X, upperLeftCornerDelta.Y, 0, 0); 
                 return 0;
             }
 

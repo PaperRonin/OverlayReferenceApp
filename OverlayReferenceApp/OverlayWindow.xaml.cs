@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Input;
 
 namespace OverlayReferenceApp
 {
@@ -7,6 +9,8 @@ namespace OverlayReferenceApp
     /// </summary>
     public partial class OverlayWindow : Window
     {
+        private Point mouseDownLocation;
+
         public OverlayWindow()
         {
             InitializeComponent();
@@ -18,6 +22,25 @@ namespace OverlayReferenceApp
 
             Picture.Creation.SetImgFromFile(ImageViewer, filePath);
 
+        }
+
+        private void ImageViewer_LBMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            mouseDownLocation = Mouse.GetPosition(this);
+            ImageViewer.CaptureMouse();
+        }
+        private void ImageViewer_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(this.Width / 2, this.Height / 2));
+                mouseDownLocation = Mouse.GetPosition(this);
+            }
+        }
+
+        private void ImageViewer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ImageViewer.ReleaseMouseCapture();
         }
     }
 }
