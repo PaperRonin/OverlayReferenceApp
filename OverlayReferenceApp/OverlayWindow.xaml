@@ -4,7 +4,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="OverlayWindow" Height="450" Width="800">
-
-    <Image Name="ImageViewer"  RenderOptions.BitmapScalingMode="HighQuality" MouseLeftButtonDown="ImageViewer_LBMouseDown" MouseMove="ImageViewer_MouseMove" MouseLeftButtonUp="ImageViewer_MouseLeftButtonUp"></Image>
+        Title="OverlayWindow"
+        Height="450" Width="800">
+    <Border Name="border">
+        <Image Name="ImageViewer"  RenderOptions.BitmapScalingMode="HighQuality" MouseLeftButtonDown="ImageViewer_LBMouseDown" MouseMove="ImageViewer_MouseMove" MouseLeftButtonUp="ImageViewer_MouseLeftButtonUp"></Image>
+    </Border>
 </Window>

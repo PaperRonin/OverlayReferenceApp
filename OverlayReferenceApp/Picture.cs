@@ -11,7 +11,7 @@ namespace OverlayReferenceApp
         public static class Creation
         {
 
-            public static int SetImgFromFile(Image img, string filePath)
+            public static int SetImgFromFile(Image img, string filePath, Window window)
             {
                 try
                 {
@@ -23,7 +23,7 @@ namespace OverlayReferenceApp
                     img.Source = bitmapImg;
                     img.Height = bitmapImg.Height;
                     img.Width = bitmapImg.Width;
-                    ResizeWindow(img, (Window)img.Parent);//Gets the image parent window
+                    ResizeWindow(img, window);//Gets the image parent window
                     return 0;
                 }
                 catch (Exception)
@@ -48,12 +48,15 @@ namespace OverlayReferenceApp
                     window.Height = proportions * window.Width;
                     MinimiseImg(img, window.Width, proportions);
                 }
-                CentralizeImg(img, window);
+                CentralizeImg(img);
             }
 
-            private static void CentralizeImg(Image img, Window window) =>
-                img.Margin = new Thickness((window.Width - img.Width) / 2, (window.Height - img.Height) / 2, 0, 0);
-
+            private static void CentralizeImg(Image img)
+            {
+                 double widthDelta = -8;// dragons for picture centralizing
+                 double heightDelta = -19.5;
+                img.Margin = new Thickness(widthDelta, heightDelta, 0, 0);
+            }
             private static void MinimiseImg(Image img, double shortestSize, double proportions)
             {
                 img.Width = shortestSize * proportions;
@@ -74,20 +77,17 @@ namespace OverlayReferenceApp
                 Point lowerRightCornerDelta = new Point(currentPoint.X + img.Margin.Left + img.Width - startingPoint.X,
                     currentPoint.Y + img.Margin.Top + img.Height - startingPoint.Y);
 
-                Console.WriteLine(img.Margin.Top);
-                Console.WriteLine(windowCenter.Y);
-                Console.WriteLine();
 
-                if (upperLeftCornerDelta.X > windowCenter.X || lowerRightCornerDelta.X < windowCenter.X)
+                if (upperLeftCornerDelta.X > windowCenter.X || upperLeftCornerDelta.X < -windowCenter.X * 2) //here be dragons
                 {
                     upperLeftCornerDelta.X = img.Margin.Left;
                 }
-                if (upperLeftCornerDelta.Y > windowCenter.Y || lowerRightCornerDelta.Y < windowCenter.Y)
+                if (upperLeftCornerDelta.Y > windowCenter.Y || upperLeftCornerDelta.Y < -windowCenter.Y * 2) //here be dragons
                 {
                     upperLeftCornerDelta.Y = img.Margin.Top;
                 }
 
-                img.Margin = new Thickness(upperLeftCornerDelta.X, upperLeftCornerDelta.Y, 0, 0); 
+                img.Margin = new Thickness(upperLeftCornerDelta.X, upperLeftCornerDelta.Y, 0, 0);
                 return 0;
             }
 

@@ -20,8 +20,7 @@ namespace OverlayReferenceApp
         {
             InitializeComponent();
 
-            Picture.Creation.SetImgFromFile(ImageViewer, filePath);
-
+            Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
         }
 
         private void ImageViewer_LBMouseDown(object sender, MouseButtonEventArgs e)
@@ -33,7 +32,7 @@ namespace OverlayReferenceApp
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(this.Width / 2, this.Height / 2));
+                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(border.RenderSize.Width / 2, border.RenderSize.Height / 2));
                 mouseDownLocation = Mouse.GetPosition(this);
             }
         }
