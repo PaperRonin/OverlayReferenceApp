@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using System;
 using System.Windows;
+using System.Windows.Media;
 
 namespace OverlayReferenceApp
 {
@@ -72,33 +73,42 @@ namespace OverlayReferenceApp
         {
             public static int MoveTo(Point startingPoint, Point currentPoint, Image img, Point windowCenter)
             {
-                Point upperLeftCornerDelta = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
-                    currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
+                try
+                {
+                    Point upperLeftCornerDelta = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
+                        currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
 
-                Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(startingPoint, currentPoint, img, windowCenter, upperLeftCornerDelta);
+                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(startingPoint, currentPoint, img, windowCenter, upperLeftCornerDelta);
 
-                upperLeftCornerDelta.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : upperLeftCornerDelta.X;
-                upperLeftCornerDelta.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : upperLeftCornerDelta.Y;
+                    upperLeftCornerDelta.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : upperLeftCornerDelta.X;
+                    upperLeftCornerDelta.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : upperLeftCornerDelta.Y;
 
-                Canvas.SetLeft(img, upperLeftCornerDelta.X);
-                Canvas.SetTop(img, upperLeftCornerDelta.Y);
+                    Canvas.SetLeft(img, upperLeftCornerDelta.X);
+                    Canvas.SetTop(img, upperLeftCornerDelta.Y);
 
-                return 0;
+                    return 0;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
             }
-
         }
 
         public static class Resizing
         {
-            public static int ScaleUp()
+            public static int ScaleUp(Image img)
             {
-
+                img.Width *= 1.1;
+                img.Height *= 1.1;
                 return 0;
             }
 
-            public static int ScaleDown()
+            public static int ScaleDown(Image img)
             {
 
+                img.Width *= 0.9;
+                img.Height *= 0.9;
                 return 0;
             }
         }

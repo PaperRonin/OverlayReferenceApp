@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -41,6 +41,20 @@ namespace OverlayReferenceApp
         private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             this.ReleaseMouseCapture();
+        }
+
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            switch (e.Delta)
+            {
+                case  120:
+                    Picture.Resizing.ScaleUp(ImageViewer);
+                    break;
+
+                case -120:
+                    Picture.Resizing.ScaleDown(ImageViewer);
+                    break;
+            }
         }
     }
 }
