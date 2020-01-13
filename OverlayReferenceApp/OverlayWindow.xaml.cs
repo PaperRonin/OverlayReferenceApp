@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -23,12 +23,13 @@ namespace OverlayReferenceApp
             Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
         }
 
-        private void ImageViewer_LBMouseDown(object sender, MouseButtonEventArgs e)
+        private void Canvas_LBMouseDown(object sender, MouseButtonEventArgs e)
         {
             mouseDownLocation = Mouse.GetPosition(this);
-            ImageViewer.CaptureMouse();
+            this.CaptureMouse();
         }
-        private void ImageViewer_MouseMove(object sender, MouseEventArgs e)
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
@@ -37,9 +38,9 @@ namespace OverlayReferenceApp
             }
         }
 
-        private void ImageViewer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            ImageViewer.ReleaseMouseCapture();
+            this.ReleaseMouseCapture();
         }
     }
 }
