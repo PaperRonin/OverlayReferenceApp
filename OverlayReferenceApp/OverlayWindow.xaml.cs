@@ -32,7 +32,7 @@ namespace OverlayReferenceApp
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(border.RenderSize.Width / 2, border.RenderSize.Height / 2));
+                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2));
                 mouseDownLocation = Mouse.GetPosition(this);
             }
         }

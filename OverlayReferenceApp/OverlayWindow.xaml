@@ -6,7 +6,14 @@
         mc:Ignorable="d"
         Title="OverlayWindow"
         Height="450" Width="800">
-    <Border Name="border">
-        <Image Name="ImageViewer"  RenderOptions.BitmapScalingMode="HighQuality" MouseLeftButtonDown="ImageViewer_LBMouseDown" MouseMove="ImageViewer_MouseMove" MouseLeftButtonUp="ImageViewer_MouseLeftButtonUp"></Image>
-    </Border>
+    <Canvas x:Name="canvas"
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch">
+        <Image x:Name="ImageViewer"
+               RenderOptions.BitmapScalingMode="HighQuality"
+               MouseLeftButtonDown="ImageViewer_LBMouseDown"
+               MouseMove="ImageViewer_MouseMove"
+               MouseLeftButtonUp="ImageViewer_MouseLeftButtonUp">
+        </Image>
+    </Canvas>
 </Window>
