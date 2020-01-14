@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System;
 using System.Windows;
@@ -97,26 +97,46 @@ namespace OverlayReferenceApp
 
         public static class Resizing
         {
-            public static int ScaleUp(Image img)
+            public static void ScaleUp(Image img)
             {
-                img.Width *= 1.1;
-                img.Height *= 1.1;
-                return 0;
+                Resize(img, 1.1);
             }
 
-            public static int ScaleDown(Image img)
+            public static void ScaleDown(Image img, Point windowCenter)
             {
+                Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
 
-                img.Width *= 0.9;
-                img.Height *= 0.9;
-                return 0;
+                Resize(img, 0.9);
+
+                Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
+                Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
+                MovementBoundaries.CorrectPosition(OOBFlag, startingPoint, img);
+            }
+
+            private static int Resize(Image img, double scale)
+            {
+                try
+                {
+                    img.Width *= scale;
+                    img.Height *= scale;
+                    return 0;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
             }
         }
 
         private static class MovementBoundaries
         {
-            public static void CorrectPosition()
+            public static void CorrectPosition(Point OOBFlag, Point startingPoint, Image img)
             {
+                if (OOBFlag.X != 0 )
+                    Canvas.SetLeft(img, startingPoint.X - img.Width);
+
+                if (OOBFlag.Y != 0)
+                    Canvas.SetTop(img, startingPoint.Y - img.Height);
             }
 
             public static Point IsOutOfBoundaries(Image img, Point windowCenter, Point newPos)
