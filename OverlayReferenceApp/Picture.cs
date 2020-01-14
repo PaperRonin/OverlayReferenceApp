@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System;
 using System.Windows;
@@ -75,16 +75,16 @@ namespace OverlayReferenceApp
             {
                 try
                 {
-                    Point upperLeftCornerDelta = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
+                    Point NewImgPos = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
                         currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
 
-                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(startingPoint, currentPoint, img, windowCenter, upperLeftCornerDelta);
+                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
 
-                    upperLeftCornerDelta.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : upperLeftCornerDelta.X;
-                    upperLeftCornerDelta.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : upperLeftCornerDelta.Y;
+                    NewImgPos.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : NewImgPos.X;
+                    NewImgPos.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : NewImgPos.Y;
 
-                    Canvas.SetLeft(img, upperLeftCornerDelta.X);
-                    Canvas.SetTop(img, upperLeftCornerDelta.Y);
+                    Canvas.SetLeft(img, NewImgPos.X);
+                    Canvas.SetTop(img, NewImgPos.Y);
 
                     return 0;
                 }
@@ -119,16 +119,16 @@ namespace OverlayReferenceApp
             {
             }
 
-            public static Point IsOutOfBoundaries(Point startingPoint, Point currentPoint, Image img, Point windowCenter, Point delta)
+            public static Point IsOutOfBoundaries(Image img, Point windowCenter, Point newPos)
             {
-                Point flag = new Point(0, 0);
-
-
-                flag.X = (delta.X > windowCenter.X) ? -1 : 0;
-                flag.X = (delta.X < windowCenter.X - img.Width) ? 1 : flag.X;
-
-                flag.Y = (delta.Y > windowCenter.Y) ? -1 : 0;
-                flag.Y = (delta.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
+                Point flag = new Point(0, 0)
+                {
+                    X = (newPos.X > windowCenter.X) ? -1 : 0,
+                    Y = (newPos.Y > windowCenter.Y) ? -1 : 0
+                };
+                flag.X = (newPos.X < windowCenter.X - img.Width) ? 1 : flag.X;
+                
+                flag.Y = (newPos.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
                 Console.WriteLine(flag);
                 return flag;
             }

@@ -33,7 +33,8 @@ namespace OverlayReferenceApp
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2));
+                Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
+                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, windowCenter);
                 mouseDownLocation = Mouse.GetPosition(this);
             }
         }
@@ -52,7 +53,8 @@ namespace OverlayReferenceApp
                     break;
 
                 case -120:
-                    Picture.Resizing.ScaleDown(ImageViewer);
+                    Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
+                    Picture.Resizing.ScaleDown(ImageViewer, windowCenter);
                     break;
             }
         }
