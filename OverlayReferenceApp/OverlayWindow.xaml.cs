@@ -23,23 +23,40 @@ namespace OverlayReferenceApp
             Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
         }
 
-        private void ImageViewer_LBMouseDown(object sender, MouseButtonEventArgs e)
+        private void Canvas_LBMouseDown(object sender, MouseButtonEventArgs e)
         {
             mouseDownLocation = Mouse.GetPosition(this);
-            ImageViewer.CaptureMouse();
+            this.CaptureMouse();
         }
-        private void ImageViewer_MouseMove(object sender, MouseEventArgs e)
+
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, new Point(border.RenderSize.Width / 2, border.RenderSize.Height / 2));
+                Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
+                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, windowCenter);
                 mouseDownLocation = Mouse.GetPosition(this);
             }
         }
 
-        private void ImageViewer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            ImageViewer.ReleaseMouseCapture();
+            this.ReleaseMouseCapture();
+        }
+
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            switch (e.Delta)
+            {
+                case  120:
+                    Picture.Resizing.ScaleUp(ImageViewer);
+                    break;
+
+                case -120:
+                    Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
+                    Picture.Resizing.ScaleDown(ImageViewer, windowCenter);
+                    break;
+            }
         }
     }
 }

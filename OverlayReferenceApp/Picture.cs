@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using System;
 using System.Windows;
+using System.Windows.Media;
 
 namespace OverlayReferenceApp
 {
@@ -23,7 +24,7 @@ namespace OverlayReferenceApp
                     img.Source = bitmapImg;
                     img.Height = bitmapImg.Height;
                     img.Width = bitmapImg.Width;
-                    ResizeWindow(img, window);//Gets the image parent window
+                    ResizeWindow(img, window);
                     return 0;
                 }
                 catch (Exception)
@@ -53,16 +54,18 @@ namespace OverlayReferenceApp
 
             private static void CentralizeImg(Image img)
             {
-                 double widthDelta = -8;// dragons for picture centralizing
-                 double heightDelta = -19.5;
-                img.Margin = new Thickness(widthDelta, heightDelta, 0, 0);
+                const double widthDelta = -8;//correction for centralizing image in window properly
+                const double heightDelta = -19.5;
+
+                Canvas.SetLeft(img, widthDelta);
+                Canvas.SetTop(img, heightDelta);
             }
+
             private static void MinimiseImg(Image img, double shortestSize, double proportions)
             {
                 img.Width = shortestSize * proportions;
                 img.Height = shortestSize;
             }
-
 
         }
 
@@ -70,53 +73,84 @@ namespace OverlayReferenceApp
         {
             public static int MoveTo(Point startingPoint, Point currentPoint, Image img, Point windowCenter)
             {
-
-                Point upperLeftCornerDelta = new Point(currentPoint.X + img.Margin.Left - startingPoint.X,
-                    currentPoint.Y + img.Margin.Top - startingPoint.Y);
-
-                Point lowerRightCornerDelta = new Point(currentPoint.X + img.Margin.Left + img.Width - startingPoint.X,
-                    currentPoint.Y + img.Margin.Top + img.Height - startingPoint.Y);
-
-
-                if (upperLeftCornerDelta.X > windowCenter.X || upperLeftCornerDelta.X < -windowCenter.X * 2) //here be dragons
+                try
                 {
-                    upperLeftCornerDelta.X = img.Margin.Left;
-                }
-                if (upperLeftCornerDelta.Y > windowCenter.Y || upperLeftCornerDelta.Y < -windowCenter.Y * 2) //here be dragons
-                {
-                    upperLeftCornerDelta.Y = img.Margin.Top;
-                }
+                    Point NewImgPos = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
+                        currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
 
-                img.Margin = new Thickness(upperLeftCornerDelta.X, upperLeftCornerDelta.Y, 0, 0);
-                return 0;
+                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
+
+                    NewImgPos.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : NewImgPos.X;
+                    NewImgPos.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : NewImgPos.Y;
+
+                    Canvas.SetLeft(img, NewImgPos.X);
+                    Canvas.SetTop(img, NewImgPos.Y);
+
+                    return 0;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
             }
-
         }
 
         public static class Resizing
         {
-            public static int ScaleUp()
+            public static void ScaleUp(Image img)
             {
-
-                return 0;
+                Resize(img, 1.1);
             }
 
-            public static int ScaleDown()
+            public static void ScaleDown(Image img, Point windowCenter)
             {
+                Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
 
-                return 0;
+                Resize(img, 0.9);
+
+                Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
+                Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
+                MovementBoundaries.CorrectPosition(OOBFlag, startingPoint, img);
+            }
+
+            private static int Resize(Image img, double scale)
+            {
+                try
+                {
+                    img.Width *= scale;
+                    img.Height *= scale;
+                    return 0;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
             }
         }
 
         private static class MovementBoundaries
         {
-            public static void CorrectPosition()
+            public static void CorrectPosition(Point OOBFlag, Point startingPoint, Image img)
             {
+                if (OOBFlag.X != 0 )
+                    Canvas.SetLeft(img, startingPoint.X - img.Width);
+
+                if (OOBFlag.Y != 0)
+                    Canvas.SetTop(img, startingPoint.Y - img.Height);
             }
 
-            private static bool IsOutOfBoundaries()
+            public static Point IsOutOfBoundaries(Image img, Point windowCenter, Point newPos)
             {
-                return false;
+                Point flag = new Point(0, 0)
+                {
+                    X = (newPos.X > windowCenter.X) ? -1 : 0,
+                    Y = (newPos.Y > windowCenter.Y) ? -1 : 0
+                };
+                flag.X = (newPos.X < windowCenter.X - img.Width) ? 1 : flag.X;
+                
+                flag.Y = (newPos.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
+                Console.WriteLine(flag);
+                return flag;
             }
 
         }

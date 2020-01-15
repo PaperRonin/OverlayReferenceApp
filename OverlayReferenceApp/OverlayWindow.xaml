@@ -5,8 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="OverlayWindow"
-        Height="450" Width="800">
-    <Border Name="border">
-        <Image Name="ImageViewer"  RenderOptions.BitmapScalingMode="HighQuality" MouseLeftButtonDown="ImageViewer_LBMouseDown" MouseMove="ImageViewer_MouseMove" MouseLeftButtonUp="ImageViewer_MouseLeftButtonUp"></Image>
-    </Border>
+        Height="450" Width="800"
+        MouseLeftButtonDown="Canvas_LBMouseDown"
+        MouseMove="Canvas_MouseMove"
+        MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
+        MouseWheel="Canvas_MouseWheel">
+    <Canvas x:Name="canvas"
+            VerticalAlignment="Stretch"
+            HorizontalAlignment="Stretch">
+        <Image x:Name="ImageViewer"
+               RenderOptions.BitmapScalingMode="HighQuality">
+        </Image>
+    </Canvas>
 </Window>
