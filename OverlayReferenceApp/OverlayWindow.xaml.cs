@@ -10,16 +10,17 @@ namespace OverlayReferenceApp
     public partial class OverlayWindow : Window
     {
         private Point mouseDownLocation;
+        private MainWindow menu;
 
         public OverlayWindow()
         {
             InitializeComponent();
         }
 
-        public OverlayWindow(string filePath)
+        public OverlayWindow(string filePath, MainWindow menu)
         {
             InitializeComponent();
-
+            this.menu = menu;
             Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
         }
 
@@ -57,6 +58,11 @@ namespace OverlayReferenceApp
                     Picture.Resizing.ScaleDown(ImageViewer, windowCenter);
                     break;
             }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            menu.RemoveFromWindowList(this);
         }
     }
 }

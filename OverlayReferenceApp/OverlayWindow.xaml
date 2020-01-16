@@ -6,10 +6,12 @@
         mc:Ignorable="d"
         Title="OverlayWindow"
         Height="450" Width="800"
+        Topmost="True"
         MouseLeftButtonDown="Canvas_LBMouseDown"
         MouseMove="Canvas_MouseMove"
         MouseLeftButtonUp="Canvas_MouseLeftButtonUp"
-        MouseWheel="Canvas_MouseWheel">
+        MouseWheel="Canvas_MouseWheel"
+        Closed="Window_Closed">
     <Canvas x:Name="canvas"
             VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch">

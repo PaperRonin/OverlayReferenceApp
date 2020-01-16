@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OverlayReferenceApp"
         mc:Ignorable="d"
-        Title="Menu" Height="300" Width="250">
+        Title="Menu" Height="300" Width="250"
+        Closed="Window_Closed">
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
         <Grid.Resources>
