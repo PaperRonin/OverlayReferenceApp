@@ -97,20 +97,39 @@ namespace OverlayReferenceApp
 
         public static class Resizing
         {
+            private const double sizeUpScale = 1.1;
+            private const double sizeDownScale = 0.9;
+
             public static void ScaleUp(Image img)
             {
-                Resize(img, 1.1);
+                ScaleUp(img, sizeUpScale);
+            }
+
+            public static void ScaleUp(Image img, double scale)
+            {
+                if (scale > 1)
+                {
+                    Resize(img, scale);
+                }
             }
 
             public static void ScaleDown(Image img, Point windowCenter)
             {
-                Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
+                ScaleDown(img, windowCenter, sizeDownScale);
 
-                Resize(img, 0.9);
+            }
+            public static void ScaleDown(Image img, Point windowCenter, double scale)
+            {
+                if (scale < 1)
+                {
+                    Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
 
-                Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
-                Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
-                MovementBoundaries.CorrectPosition(OOBFlag, startingPoint, img);
+                    Resize(img, scale);
+
+                    Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
+                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
+                    MovementBoundaries.CorrectPosition(OOBFlag, startingPoint, img);
+                }
             }
 
             private static int Resize(Image img, double scale)
@@ -126,13 +145,28 @@ namespace OverlayReferenceApp
                     return -1;
                 }
             }
+
+            public static int Centralize(Window window, Image img)
+            {
+                try
+                {
+                    Size imageDelta = new Size((window.Width - img.Width) / 2, (window.Height - img.Height) / 2);
+                    Canvas.SetLeft(img, imageDelta.Width);
+                    Canvas.SetTop(img, imageDelta.Height);
+                    return 1;
+                }
+                catch (Exception)
+                {
+                    return -1;
+                }
+            }
         }
 
         private static class MovementBoundaries
         {
             public static void CorrectPosition(Point OOBFlag, Point startingPoint, Image img)
             {
-                if (OOBFlag.X != 0 )
+                if (OOBFlag.X != 0)
                     Canvas.SetLeft(img, startingPoint.X - img.Width);
 
                 if (OOBFlag.Y != 0)
@@ -147,9 +181,8 @@ namespace OverlayReferenceApp
                     Y = (newPos.Y > windowCenter.Y) ? -1 : 0
                 };
                 flag.X = (newPos.X < windowCenter.X - img.Width) ? 1 : flag.X;
-                
+
                 flag.Y = (newPos.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
-                Console.WriteLine(flag);
                 return flag;
             }
 
