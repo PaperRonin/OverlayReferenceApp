@@ -12,7 +12,7 @@ namespace OverlayReferenceApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        ///
+        #region Hotkey handling
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
@@ -65,9 +65,9 @@ namespace OverlayReferenceApp
             return IntPtr.Zero;
         }
 
-        ///
+        #endregion
 
-
+        #region Main programm
         private List<OverlayWindow> windowList;
         private bool hideSwitch = true;
 
@@ -151,4 +151,5 @@ namespace OverlayReferenceApp
             UnregisterHotKey(_windowHandle, HOTKEY_ID);
         }
     }
+    #endregion
 }

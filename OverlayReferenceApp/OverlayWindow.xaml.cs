@@ -10,6 +10,7 @@ namespace OverlayReferenceApp
     public partial class OverlayWindow : Window
     {
         private Point mouseDownLocation;
+        private Size previousWindowSize;
         private MainWindow menu;
 
         public OverlayWindow()
@@ -21,16 +22,17 @@ namespace OverlayReferenceApp
         {
             InitializeComponent();
             this.menu = menu;
+            previousWindowSize = new Size(Width, Height);
             Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
         }
 
-        private void Canvas_LBMouseDown(object sender, MouseButtonEventArgs e)
+        private void Window_LBMouseDown(object sender, MouseButtonEventArgs e)
         {
             mouseDownLocation = Mouse.GetPosition(this);
             this.CaptureMouse();
         }
 
-        private void Canvas_MouseMove(object sender, MouseEventArgs e)
+        private void Window_MouseMove(object sender, MouseEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
@@ -40,16 +42,16 @@ namespace OverlayReferenceApp
             }
         }
 
-        private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             this.ReleaseMouseCapture();
         }
 
-        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             switch (e.Delta)
             {
-                case  120:
+                case 120:
                     Picture.Resizing.ScaleUp(ImageViewer);
                     break;
 
@@ -63,6 +65,11 @@ namespace OverlayReferenceApp
         private void Window_Closed(object sender, EventArgs e)
         {
             menu.RemoveFromWindowList(this);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Picture.Resizing.Centralize(this, ImageViewer);
         }
     }
 }
