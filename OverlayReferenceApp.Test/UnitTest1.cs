@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Tests
+namespace OverlayReferenceApp.Test
 {
     public class Tests
     {
@@ -10,10 +10,9 @@ namespace Tests
         }
 
         [Test]
-        public void TestPass()
+        public void Test1()
         {
             Assert.Pass();
         }
-
     }
 }
