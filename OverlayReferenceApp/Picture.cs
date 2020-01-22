@@ -6,186 +6,179 @@ using System.Windows.Media;
 
 namespace OverlayReferenceApp
 {
-    public static class Picture
+    public class Picture
     {
+        private Image img;
+        private OverlayWindow parentWindow;
 
-        public static class Creation
+        #region initialization
+        public Picture(Image img, string filePath, OverlayWindow parentWindow)
         {
+            this.img = img;
+            this.parentWindow = parentWindow;
 
-            public static int SetImgFromFile(Image img, string filePath, Window window)
-            {
-                try
-                {
-                    BitmapImage bitmapImg = new BitmapImage();
-                    bitmapImg.BeginInit();
-                    bitmapImg.UriSource = new Uri(filePath);
-                    bitmapImg.EndInit();
+            BitmapImage bitmapImg = new BitmapImage();
+            bitmapImg.BeginInit();
+            bitmapImg.UriSource = new Uri(filePath);
+            bitmapImg.EndInit();
 
-                    img.Source = bitmapImg;
-                    img.Height = bitmapImg.Height;
-                    img.Width = bitmapImg.Width;
-                    ResizeWindow(img, window);
-                    return 0;
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
-            }
-
-            private static void ResizeWindow(Image img, Window window)
-            {
-
-                double proportions = img.Width / img.Height;
-
-                if (proportions > 0)
-                {
-                    window.Width = proportions * window.Height;
-                    MinimiseImg(img, window.Height, proportions);
-                }
-                else
-                {
-                    proportions = img.Height / img.Width;
-                    window.Height = proportions * window.Width;
-                    MinimiseImg(img, window.Width, proportions);
-                }
-                CentralizeImg(img);
-            }
-
-            private static void CentralizeImg(Image img)
-            {
-                const double widthDelta = -8;//correction for centralizing image in window properly
-                const double heightDelta = -19.5;
-
-                Canvas.SetLeft(img, widthDelta);
-                Canvas.SetTop(img, heightDelta);
-            }
-
-            private static void MinimiseImg(Image img, double shortestSize, double proportions)
-            {
-                img.Width = shortestSize * proportions;
-                img.Height = shortestSize;
-            }
-
+            img.Source = bitmapImg;
+            img.Height = bitmapImg.Height;
+            img.Width = bitmapImg.Width;
+            ResizeWindow();
         }
 
-        public static class Movement
+        private void ResizeWindow()
         {
-            public static int MoveTo(Point startingPoint, Point currentPoint, Image img, Point windowCenter)
+
+            double proportions = img.Width / img.Height;
+
+            if (proportions > 0)
             {
-                try
-                {
-                    Point NewImgPos = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
-                        currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
-
-                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
-
-                    NewImgPos.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : NewImgPos.X;
-                    NewImgPos.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : NewImgPos.Y;
-
-                    Canvas.SetLeft(img, NewImgPos.X);
-                    Canvas.SetTop(img, NewImgPos.Y);
-
-                    return 0;
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
+                parentWindow.Width = proportions * parentWindow.Height;
+                MinimiseImg(parentWindow.Height, proportions);
             }
+            else
+            {
+                proportions = img.Height / img.Width;
+                parentWindow.Height = proportions * parentWindow.Width;
+                MinimiseImg(parentWindow.Width, proportions);
+            }
+
+            const double widthDelta = -8;//correction for centralizing image in parentWindow properly
+            const double heightDelta = -19.5;
+
+            Canvas.SetLeft(img, widthDelta);
+            Canvas.SetTop(img, heightDelta);
         }
 
-        public static class Resizing
+        private void MinimiseImg(double shortestSize, double proportions)
         {
-            private const double sizeUpScale = 1.1;
-            private const double sizeDownScale = 0.9;
+            img.Width = shortestSize * proportions;
+            img.Height = shortestSize;
+        }
+        #endregion
 
-            public static void ScaleUp(Image img)
+        #region Movement
+        public int MoveTo(Point startingPoint, Point currentPoint)
+        {
+            try
             {
-                ScaleUp(img, sizeUpScale);
+                Point windowCenter = new Point(parentWindow.canvas.RenderSize.Width / 2,
+                    parentWindow.canvas.RenderSize.Height / 2);
+
+                Point NewImgPos = new Point(currentPoint.X + Canvas.GetLeft(img) - startingPoint.X,
+                    currentPoint.Y + Canvas.GetTop(img) - startingPoint.Y);
+
+                Point OOBFlag = IsOutOfBoundaries(windowCenter, NewImgPos);
+
+                NewImgPos.X = OOBFlag.X != 0 ? Canvas.GetLeft(img) : NewImgPos.X;
+                NewImgPos.Y = OOBFlag.Y != 0 ? Canvas.GetTop(img) : NewImgPos.Y;
+
+                Canvas.SetLeft(img, NewImgPos.X);
+                Canvas.SetTop(img, NewImgPos.Y);
+
+                return 0;
             }
-
-            public static void ScaleUp(Image img, double scale)
+            catch (Exception)
             {
-                if (scale > 1)
-                {
-                    Resize(img, scale);
-                }
+                return -1;
             }
+        }
+        #endregion
 
-            public static void ScaleDown(Image img, Point windowCenter)
+        #region Resizing
+        private const double sizeUpScale = 1.1;
+        private const double sizeDownScale = 0.9;
+
+        public void ScaleUp()
+        {
+            ScaleUp(sizeUpScale);
+        }
+
+        public void ScaleUp(double scale)
+        {
+            if (scale > 1)
             {
-                ScaleDown(img, windowCenter, sizeDownScale);
-
-            }
-            public static void ScaleDown(Image img, Point windowCenter, double scale)
-            {
-                if (scale < 1)
-                {
-                    Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
-
-                    Resize(img, scale);
-
-                    Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
-                    Point OOBFlag = MovementBoundaries.IsOutOfBoundaries(img, windowCenter, NewImgPos);
-                    MovementBoundaries.CorrectPosition(OOBFlag, startingPoint, img);
-                }
-            }
-
-            private static int Resize(Image img, double scale)
-            {
-                try
-                {
-                    img.Width *= scale;
-                    img.Height *= scale;
-                    return 0;
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
-            }
-
-            public static int Centralize(Window window, Image img)
-            {
-                try
-                {
-                    Size imageDelta = new Size((window.Width - img.Width) / 2, (window.Height - img.Height) / 2);
-                    Canvas.SetLeft(img, imageDelta.Width);
-                    Canvas.SetTop(img, imageDelta.Height);
-                    return 1;
-                }
-                catch (Exception)
-                {
-                    return -1;
-                }
+                Resize(scale);
             }
         }
 
-        private static class MovementBoundaries
+        public void ScaleDown()
         {
-            public static void CorrectPosition(Point OOBFlag, Point startingPoint, Image img)
-            {
-                if (OOBFlag.X != 0)
-                    Canvas.SetLeft(img, startingPoint.X - img.Width);
-
-                if (OOBFlag.Y != 0)
-                    Canvas.SetTop(img, startingPoint.Y - img.Height);
-            }
-
-            public static Point IsOutOfBoundaries(Image img, Point windowCenter, Point newPos)
-            {
-                Point flag = new Point(0, 0)
-                {
-                    X = (newPos.X > windowCenter.X) ? -1 : 0,
-                    Y = (newPos.Y > windowCenter.Y) ? -1 : 0
-                };
-                flag.X = (newPos.X < windowCenter.X - img.Width) ? 1 : flag.X;
-
-                flag.Y = (newPos.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
-                return flag;
-            }
+            ScaleDown(sizeDownScale);
 
         }
+        public void ScaleDown(double scale)
+        {
+            if (scale < 1)
+            {
+                Point windowCenter = new Point(parentWindow.canvas.RenderSize.Width / 2,
+                   parentWindow.canvas.RenderSize.Height / 2);
+
+                Point startingPoint = new Point(Canvas.GetLeft(img) + img.Width, Canvas.GetTop(img) + img.Height);
+
+                Resize(scale);
+
+                Point NewImgPos = new Point(Canvas.GetLeft(img), Canvas.GetTop(img));
+                Point OOBFlag = IsOutOfBoundaries(windowCenter, NewImgPos);
+                CorrectPosition(OOBFlag, startingPoint);
+            }
+        }
+
+        private int Resize(double scale)
+        {
+            try
+            {
+                img.Width *= scale;
+                img.Height *= scale;
+                return 0;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+
+        public int Centralize()
+        {
+            try
+            {
+                Point imageDelta = new Point((parentWindow.Width - img.Width) / 2, (parentWindow.Height - img.Height) / 2);
+                Canvas.SetLeft(img, imageDelta.X);
+                Canvas.SetTop(img, imageDelta.Y);
+                return 1;
+            }
+            catch (Exception)
+            {
+                return -1;
+            }
+        }
+        #endregion
+
+        #region Movement boundaries 
+        public void CorrectPosition(Point OOBFlag, Point startingPoint)
+        {
+            if (OOBFlag.X != 0)
+                Canvas.SetLeft(img, startingPoint.X - img.Width);
+
+            if (OOBFlag.Y != 0)
+                Canvas.SetTop(img, startingPoint.Y - img.Height);
+        }
+
+        public Point IsOutOfBoundaries(Point windowCenter, Point newPos)
+        {
+            Point flag = new Point(0, 0)
+            {
+                X = (newPos.X > windowCenter.X) ? -1 : 0,
+                Y = (newPos.Y > windowCenter.Y) ? -1 : 0
+            };
+            flag.X = (newPos.X < windowCenter.X - img.Width) ? 1 : flag.X;
+
+            flag.Y = (newPos.Y < windowCenter.Y - img.Height) ? 1 : flag.Y;
+            return flag;
+        }
+
+        #endregion
     }
 }
