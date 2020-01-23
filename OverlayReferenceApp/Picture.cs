@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System;
+﻿using System;
+using System.IO;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace OverlayReferenceApp
 {
@@ -18,10 +18,13 @@ namespace OverlayReferenceApp
             this.parentWindow = parentWindow;
 
             BitmapImage bitmapImg = new BitmapImage();
-            bitmapImg.BeginInit();
-            bitmapImg.UriSource = new Uri(filePath);
-            bitmapImg.EndInit();
-
+            using (var stream = File.OpenRead(filePath))
+            {
+                bitmapImg.BeginInit();
+                bitmapImg.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImg.StreamSource = stream;
+                bitmapImg.EndInit();
+            }
             img.Source = bitmapImg;
             img.Height = bitmapImg.Height;
             img.Width = bitmapImg.Width;

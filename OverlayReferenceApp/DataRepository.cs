@@ -11,14 +11,7 @@ namespace OverlayReferenceApp
             int count = 0;
             while (File.Exists(@"..\SavedPreset\" + count + ".png"))
             {
-                try
-                {
-                    File.Delete(@"..\SavedPreset\" + count++ + ".png");
-                }
-                catch (System.Exception)
-                {
-                    // file is being used
-                }
+                File.Delete(@"..\SavedPreset\" + count++ + ".png");
             }
         }
         public static void Save(List<OverlayWindow> windowList)
@@ -31,20 +24,11 @@ namespace OverlayReferenceApp
                 encoder.Frames.Add(BitmapFrame.Create(img));
 
                 Directory.CreateDirectory(@"..\SavedPreset\");
-                while (true)
-                {
-                    try
-                    {
-                        FileStream fs = File.Open(@"..\SavedPreset\" + count++ + ".png", FileMode.Create);
-                        encoder.Save(fs);
-                        fs.Close();
-                        break;
-                    }
-                    catch (System.Exception)
-                    {
-                        // file is being used
-                    }
-                }
+
+                FileStream fs = File.Open(@"..\SavedPreset\" + count++ + ".png", FileMode.Create);
+                encoder.Save(fs);
+                fs.Close();
+
             }
         }
 
