@@ -10,20 +10,15 @@ namespace OverlayReferenceApp
     public partial class OverlayWindow : Window
     {
         private Point mouseDownLocation;
-        private Size previousWindowSize;
         private MainWindow menu;
+        private Picture picture;
 
-        public OverlayWindow()
-        {
-            InitializeComponent();
-        }
 
         public OverlayWindow(string filePath, MainWindow menu)
         {
             InitializeComponent();
             this.menu = menu;
-            previousWindowSize = new Size(Width, Height);
-            Picture.Creation.SetImgFromFile(ImageViewer, filePath, this);
+            picture = new Picture(ImageViewer, filePath, this);
         }
 
         private void Window_LBMouseDown(object sender, MouseButtonEventArgs e)
@@ -36,15 +31,14 @@ namespace OverlayReferenceApp
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
-                Picture.Movement.MoveTo(mouseDownLocation, Mouse.GetPosition(this), ImageViewer, windowCenter);
+                picture.MoveTo(mouseDownLocation, Mouse.GetPosition(this));
                 mouseDownLocation = Mouse.GetPosition(this);
             }
         }
 
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            this.ReleaseMouseCapture();
+            ReleaseMouseCapture();
         }
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -52,12 +46,11 @@ namespace OverlayReferenceApp
             switch (e.Delta)
             {
                 case 120:
-                    Picture.Resizing.ScaleUp(ImageViewer);
+                    picture.ScaleUp();
                     break;
 
                 case -120:
-                    Point windowCenter = new Point(canvas.RenderSize.Width / 2, canvas.RenderSize.Height / 2);
-                    Picture.Resizing.ScaleDown(ImageViewer, windowCenter);
+                    picture.ScaleDown();
                     break;
             }
         }
@@ -69,7 +62,7 @@ namespace OverlayReferenceApp
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Picture.Resizing.Centralize(this, ImageViewer);
+            picture.Centralize();
         }
     }
 }

@@ -92,10 +92,15 @@ namespace OverlayReferenceApp
             }
             if (fileName != "")
             {
-                OverlayWindow f = new OverlayWindow(fileName, this);
-                windowList.Add(f);
-                f.Show();
+                CreateNewOverlay(fileName);
             }
+        }
+
+        public void CreateNewOverlay(string fileName)
+        {
+            OverlayWindow f = new OverlayWindow(fileName, this);
+            windowList.Add(f);
+            f.Show();
         }
 
         private void ButtonHide_Click(object sender, RoutedEventArgs e)
@@ -127,12 +132,14 @@ namespace OverlayReferenceApp
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-
+            DataRepository.ClearPreset();
+            DataRepository.Save(windowList);
         }
 
         private void ButtonLoad_Click(object sender, RoutedEventArgs e)
         {
-
+            CloseAllOverlays();
+            DataRepository.Load(this);
         }
 
         public void RemoveFromWindowList(OverlayWindow window)
@@ -142,13 +149,17 @@ namespace OverlayReferenceApp
 
         private void Window_Closed(object sender, System.EventArgs e)
         {
-            while (windowList.Count > 0)
-            {
-                windowList[windowList.Count-1].Close();
-            }
-
+            CloseAllOverlays();
             _source.RemoveHook(HwndHook);
             UnregisterHotKey(_windowHandle, HOTKEY_ID);
+        }
+
+        private void CloseAllOverlays()
+        {
+            while (windowList.Count > 0)
+            {
+                windowList[windowList.Count - 1].Close();
+            }
         }
     }
     #endregion
