@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -63,10 +62,9 @@ namespace OverlayReferenceApp
         #endregion
 
         #region Movement
-        public int MoveTo(Point startingPoint, Point currentPoint)
+        public void MoveTo(Point startingPoint, Point currentPoint)
         {
-            try
-            {
+ 
                 Point windowCenter = new Point(parentWindow.canvas.RenderSize.Width / 2,
                     parentWindow.canvas.RenderSize.Height / 2);
 
@@ -80,13 +78,6 @@ namespace OverlayReferenceApp
 
                 Canvas.SetLeft(img, NewImgPos.X);
                 Canvas.SetTop(img, NewImgPos.Y);
-
-                return 0;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
         }
         #endregion
 
@@ -129,33 +120,18 @@ namespace OverlayReferenceApp
             }
         }
 
-        private int Resize(double scale)
+        private void Resize(double scale)
         {
-            try
-            {
                 img.Width *= scale;
                 img.Height *= scale;
-                return 0;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
+
         }
 
-        public int Centralize()
+        public void Centralize()
         {
-            try
-            {
                 Point imageDelta = new Point((parentWindow.Width - img.Width) / 2, (parentWindow.Height - img.Height) / 2);
                 Canvas.SetLeft(img, imageDelta.X);
                 Canvas.SetTop(img, imageDelta.Y);
-                return 1;
-            }
-            catch (Exception)
-            {
-                return -1;
-            }
         }
         #endregion
 
