@@ -103,11 +103,6 @@ namespace OverlayReferenceApp
             f.Show();
         }
 
-        private void ButtonHide_Click(object sender, RoutedEventArgs e)
-        {
-            HideSwitch();
-        }
-
         private void HideSwitch()
         {
             switch (hideSwitch)

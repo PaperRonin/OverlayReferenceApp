@@ -9,9 +9,9 @@ namespace OverlayReferenceApp
         public static void ClearPreset()
         {
             int count = 0;
-            while (File.Exists(@"..\SavedPreset\" + count + ".png"))
+            while (File.Exists(@"SavedPreset\" + count + ".png"))
             {
-                File.Delete(@"..\SavedPreset\" + count++ + ".png");
+                File.Delete(@"SavedPreset\" + count++ + ".png");
             }
         }
         public static void Save(List<OverlayWindow> windowList)
@@ -23,9 +23,9 @@ namespace OverlayReferenceApp
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(BitmapFrame.Create(img));
 
-                Directory.CreateDirectory(@"..\SavedPreset\");
+                Directory.CreateDirectory(@"SavedPreset\");
 
-                FileStream fs = File.Open(@"..\SavedPreset\" + count++ + ".png", FileMode.Create);
+                FileStream fs = File.Open(@"SavedPreset\" + count++ + ".png", FileMode.Create);
                 encoder.Save(fs);
                 fs.Close();
 
@@ -35,9 +35,9 @@ namespace OverlayReferenceApp
         public static void Load(MainWindow parentWindow)
         {
             int count = 0;
-            while (File.Exists(@"..\SavedPreset\" + count + ".png"))
+            while (File.Exists(@"SavedPreset\" + count + ".png"))
             {
-                parentWindow.CreateNewOverlay(new FileInfo(@"..\SavedPreset\" + count++ + ".png").FullName);
+                parentWindow.CreateNewOverlay(new FileInfo(@"SavedPreset\" + count++ + ".png").FullName);
             }
         }
 
